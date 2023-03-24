@@ -18,29 +18,31 @@ def doUpload(input_file):
   
 
   try:
-    driver = webdriver.Chrome('./bin/chromedriver')
+    driver_path = "./bin/chromedriver"
+    service = Service(executable_path=driver_path)
+    driver = webdriver.Chrome(service=service)
     driver.implicitly_wait(10)
     driver.get(topurl)
     driver.implicitly_wait(10)
-    elem = driver.find_elements_by_link_text("ログイン")
+    elem = driver.find_elements(By.LINK_TEXT, "ログイン")
     elem[0].click()
     driver.implicitly_wait(10)
-    elem = driver.find_elements_by_link_text("メールアドレスでログイン")
+    elem = driver.find_elements(By.LINK_TEXT, "メールアドレスでログイン")
     elem[0].click()
     driver.implicitly_wait(10)
-  
+
     # login
-    elem = driver.find_element_by_name("mfid_user[email]")
+    elem = driver.find_element(By.NAME, "mfid_user[email]")
     elem.clear()
     elem.send_keys(user)
     elem.submit()
     driver.implicitly_wait(10)
-    elem = driver.find_element_by_name("mfid_user[password]")
+    elem = driver.find_element(By.NAME, "mfid_user[password]")
     elem.clear()
     elem.send_keys(password)
     elem.submit()
-  
-    # open 
+
+    # open
     f = open(input_file, mode='r', encoding='utf-8')
     reader = csv.reader(f)
     count = 1
@@ -57,48 +59,48 @@ def doUpload(input_file):
           # case of income
           print("[" + str(count) + "] " + "case of income : ")
           price = int(row[4])
-  
-          elem = driver.find_element_by_class_name("plus-payment").click()
-  
+
+          elem = driver.find_element(By.CLASS_NAME, "plus-payment").click()
+
         elif int(row[4]) < 0:
           # case of outgo
           print("[" + str(count) + "] " + "case of outgo : ")
           price = int(row[4])
-  
+
         else:
           print("[" + str(count) + "] " + "Error format : ")
 
         #input price info
-        elem = driver.find_element_by_id("appendedPrependedInput")
+        elem = driver.find_element(By.ID, "appendedPrependedInput")
         elem.clear()
         elem.send_keys(abs(int(row[4])))
-        
+
         #input large-category info
-        elem = driver.find_element_by_id("js-large-category-selected").click()
+        elem = driver.find_element(By.ID, "js-large-category-selected").click()
         sleep(1)
-        elem = driver.find_element_by_xpath("//a[text()='" + row[1] + "' and @class='l_c_name']").click()
+        elem = driver.find_element(By.XPATH, "//a[text()='" + row[1] + "' and @class='l_c_name']").click()
         sleep(1)
         #input middle-category info
-        elem = driver.find_element_by_id("js-middle-category-selected").click()
+        elem = driver.find_element(By.ID, "js-middle-category-selected").click()
         sleep(1)
-        elem = driver.find_element_by_xpath("//a[text()='" + row[2] + "' and @class='m_c_name']").click()
+        elem = driver.find_element(By.XPATH, "//a[text()='" + row[2] + "' and @class='m_c_name']").click()
         sleep(1)
         #input content-field info
-        elem = driver.find_element_by_id("js-content-field")
+        elem = driver.find_element(By.ID, "js-content-field")
         elem.clear()
         elem.send_keys(row[3])
 
         #input date info
-        elem = driver.find_element_by_id("updated-at")
+        elem = driver.find_element(By.ID, "updated-at")
         elem.clear()
         elem.send_keys(row[0])
-        
+
         #save
-        elem = driver.find_element_by_id("submit-button").click()
+        elem = driver.find_element(By.ID, "submit-button").click()
         element = WebDriverWait(driver, 10).until(
               EC.presence_of_element_located((By.ID, "confirmation-button"))
         )
-        elem = driver.find_element_by_id("confirmation-button").click()
+        elem = driver.find_element(By.ID, "confirmation-button").click()
         element = WebDriverWait(driver, 10).until(
              EC.presence_of_element_located((By.ID, "submit-button"))
         )
