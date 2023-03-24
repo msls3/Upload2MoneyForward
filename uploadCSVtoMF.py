@@ -21,6 +21,9 @@ def doUpload(input_file):
     driver_path = "./bin/chromedriver"
     service = Service(executable_path=driver_path)
     driver = webdriver.Chrome(service=service)
+    option = webdriver.ChromeOptions()
+    option.add_experimental_option('prefs', {'intl.accept_languages': 'ja'})
+    driver = webdriver.Chrome(options=option)
     driver.implicitly_wait(10)
     driver.get(topurl)
     driver.implicitly_wait(10)
